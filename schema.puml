@@ -1,0 +1,129 @@
+@startuml
+    !theme plain
+    hide empty methods
+
+    !procedure $schema($name, $slug)
+        package "$name" as $slug <<Rectangle>>
+    !endprocedure
+
+    !procedure $table($name, $slug)
+        entity "<b>$name</b>" as $slug << (T, Aquamarine) table >>
+    !endprocedure
+
+    !procedure $view($name, $slug)
+        entity "<b>$name</b>" as $slug << (V, Aquamarine) view >>
+    !endprocedure
+
+    !procedure $pk($name)
+        <color:#GoldenRod><&key></color> <b>$name</b>
+    !endprocedure
+
+    !procedure $fk($name)
+        <color:#Silver><&key></color> $name
+    !endprocedure
+
+    !procedure $column($name)
+        {field} <color:#White><&media-record></color> $name
+    !endprocedure
+
+
+    title "Data warehouse"
+
+    $schema("view_app_1", "id_7f7f6c23") {
+        $table("first_table", "id_751e68cd") {
+            $column("POSTALCODE"): VARCHAR NOT NULL
+            $column("COUNTRY"): VARCHAR NOT NULL
+            $fk("BOOKID"): INTEGER
+            $fk("COUPON_ID"): INTEGER
+            $column("PERIODENDDATE"): DATE
+            $column("TOTALAMOUNT"): DOUBLE
+        }
+    }
+    $schema("view_app_2", "id_7f7f6c25") {
+        $table("first_table", "id_751e68cd") {
+            $column("POSTALCODE"): VARCHAR NOT NULL
+            $column("COUNTRY"): VARCHAR NOT NULL
+            $fk("BOOKID"): INTEGER
+            $fk("COUPON_ID"): INTEGER
+            $column("PERIODENDDATE"): DATE
+            $column("TOTALAMOUNT"): DOUBLE
+        }
+    }
+    $schema("first_data_server", "id_7f7f6c21") {
+        $table("first_table", "id_751e68cd") {
+            $column("POSTALCODE"): VARCHAR NOT NULL
+            $column("COUNTRY"): VARCHAR NOT NULL
+            $fk("BOOKID"): INTEGER
+            $fk("COUPON_ID"): INTEGER
+            $column("PERIODENDDATE"): DATE
+            $column("TOTALAMOUNT"): DOUBLE
+        }
+    }
+    $schema("data_warehouse_serer", "id_208b5502") {
+        $table("original_table", "id_f521e766") {
+            $pk("ID"): INTEGER NOT NULL
+            $column("FIRSTNAME"): VARCHAR NOT NULL
+            $column("LASTNAME"): VARCHAR NOT NULL
+            $column("ADDRESS1"): VARCHAR
+            $column("ADDRESS2"): VARCHAR
+            $column("CITY"): VARCHAR
+            $column("STATE"): CHARACTER
+            $column("POSTALCODE"): VARCHAR
+            $column("COUNTRY"): VARCHAR
+        }
+        $table("stagging_table", "id_f4a675c8") {
+            $pk("ID"): INTEGER NOT NULL
+            $column("TITLE"): VARCHAR NOT NULL
+            $column("DESCRIPTION"): VARCHAR
+            $column("PUBLISHERID"): INTEGER NOT NULL
+            $column("PUBLICATIONDATE"): DATE
+            $column("PRICE"): DOUBLE
+        }
+        $table("temp_table", "id_ead84c5e") {
+            $fk("BOOKID"): INTEGER NOT NULL
+            $fk("AUTHORID"): INTEGER NOT NULL
+            $column("SOMEDATA"): VARCHAR
+        }
+        $table("dwh_table", "id_ead84c5d") {
+            $fk("BOOKID"): INTEGER NOT NULL
+            $fk("AUTHORID"): INTEGER NOT NULL
+            $column("SOMEDATA"): VARCHAR
+        }
+    }
+    $schema("document_storage", "id_7f7f6c24") {
+        $table("first_table", "id_751e68cc") {
+            $column("POSTALCODE"): VARCHAR NOT NULL
+            $column("COUNTRY"): VARCHAR NOT NULL
+            $fk("BOOKID"): INTEGER
+            $fk("COUPON_ID"): INTEGER
+            $column("PERIODENDDATE"): DATE
+            $column("TOTALAMOUNT"): DOUBLE
+        }
+    }
+    $schema("second_data_server", "id_7f7f6c20") {
+        $table("first_table", "id_751e68cc") {
+            $column("POSTALCODE"): VARCHAR NOT NULL
+            $column("COUNTRY"): VARCHAR NOT NULL
+            $fk("BOOKID"): INTEGER
+            $fk("COUPON_ID"): INTEGER
+            $column("PERIODENDDATE"): DATE
+            $column("TOTALAMOUNT"): DOUBLE
+        }
+        $table("second_table", "id_751e68cd") {
+            $column("POSTALCODE"): VARCHAR NOT NULL
+            $column("COUNTRY"): VARCHAR NOT NULL
+            $fk("BOOKID"): INTEGER
+            $fk("COUPON_ID"): INTEGER
+            $column("PERIODENDDATE"): DATE
+            $column("TOTALAMOUNT"): DOUBLE
+        }
+    }
+    id_7f7f6c24 --> id_208b5502
+    id_208b5502.id_f521e766 --> id_208b5502.id_f4a675c8
+    id_208b5502.id_f4a675c8 --> id_208b5502.id_ead84c5e
+    id_208b5502.id_ead84c5e --> id_208b5502.id_ead84c5d
+    id_7f7f6c20 --> id_7f7f6c24
+    id_7f7f6c21 --> id_208b5502
+    id_7f7f6c21 --> id_7f7f6c23
+    id_208b5502 --> id_7f7f6c25
+@enduml
